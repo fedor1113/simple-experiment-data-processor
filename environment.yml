@@ -1,0 +1,12 @@
+name: simple_experiment_data_processor
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python>3.7
+  - notebook>6.0
+  - matplotlib
+  - ipywidgets=7
+  - plotly
+  - beakerx
