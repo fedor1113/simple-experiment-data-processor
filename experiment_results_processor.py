@@ -308,7 +308,7 @@ def formatted_output_of_an_experiment_result(
     if error == 0:
         # Nothing fancy here. Just the result, as is.
         # Allegedly verified...
-        return res
+        return str(res)
 
     """Now, two cases are apparent for the non-zero error: it can be
        only a fraction of, or it can be equal to or bigger than
