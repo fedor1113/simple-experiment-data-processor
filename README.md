@@ -10,7 +10,7 @@
 
 ```
 python3 experiment_results_processor.py [-h] [-p PROBABILITY]
-                                       [-d [DATA [DATA ...]]] [-K | -S]
+                                       [-d [DATA [DATA ...]]] [-C | -S]
 ```
 
 Данные вводятся после вызова программы — или как параметры при вызове c флагом `-d`.
@@ -21,7 +21,7 @@ python3 experiment_results_processor.py [-h] [-p PROBABILITY]
                         выставить вероятность для t-распределения равной PROBABILITY
   * -d [DATA [DATA ...]], --data [DATA [DATA ...]]
                         ввести данные [DATA [DATA ...]] (вместо ввода внутри программы)
-  * -K, --kornfeld        использовать метод Корнфельда
+  * -C, --cornfeld        использовать метод Корнфельда
   * -S, --student         использовать метод Стьюдента
 
 Утилита выводит:

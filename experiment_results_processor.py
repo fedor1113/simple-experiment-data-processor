@@ -97,7 +97,7 @@ def student_t(alpha, n):
     lookupval = PROBABILITY_LOOKUP
     if n == float('inf') or n >= len(STUDENT_COEFFICIENTS):
         n = 0
-    
+
     return STUDENT_COEFFICIENTS[n-1][lookupval[alpha]]
 
 
@@ -119,7 +119,7 @@ def range_of_sample(*variables):
     return max(variables) - min(variables)
 
 
-def Kornfeld_variance(*variables):
+def Cornfeld_variance(*variables):
     """Return the variance of a sample.
        Input: *float (all variables as arguments)
        Output: int
@@ -128,8 +128,8 @@ def Kornfeld_variance(*variables):
     return range_of_sample(*variables) / 2
 
 
-def Kornfeld_mean(*variables):
-    """Return the mean of a sample using Kornfeld's method.
+def Cornfeld_mean(*variables):
+    """Return the mean of a sample using Cornfeld's method.
        Input: *float (all variables as arguments)
        Output: int
     """
@@ -137,8 +137,8 @@ def Kornfeld_mean(*variables):
     return (max(variables) + min(variables)) / 2
 
 
-def kornfeld_probability(sample_size):
-    """Return the probability for Kornfeld's method.
+def cornfeld_probability(sample_size):
+    """Return the probability for Cornfeld's method.
        Input: int
        Output: float
     """
@@ -189,7 +189,7 @@ def calculate_if_not_given(func, value, calc_f):
                 f_args[0] += args
             if f_params.varkw is not None:
                 f_args[1] = kwargs
-            value = f_calc(*f_args[0], **f_args[1])
+            value = calc_f(*f_args[0], **f_args[1])
             kwargs[name] = value
         return func(*args, **kwargs)
 
@@ -242,7 +242,7 @@ def standard_deviation_of_a_sample(*variables, mean=None):
     for x in variables:
         sigma += (x - mean)**2
         sample_size += 1
-    
+
     if sample_size < 2:
         return 0
 
@@ -262,7 +262,7 @@ def standard_error_of_the_mean(*variables, mean=None):
 
     sigma = standard_deviation_of_a_sample(*variables, mean=mean)
     sample_size_sqrt = sample_size(*variables)**0.5
-    
+
     return sigma / sample_size_sqrt
 
 
@@ -344,7 +344,7 @@ def formatted_output_of_an_experiment_result(
         else:
             return (f'{res_significant} ' +
                     f'± {error_significant}')
-    
+
     # Error is smaller than the unit of measurement.
     # No scientific notation here.
     # Just display stuff the old-fashioned straight-forward
@@ -378,7 +378,7 @@ Result: x = (<x> ± Δ(x))
     # Get command line arguments passed to the program
     dscrptn = 'This is a small utility to help you process\n'
     dscrptn += 'small data samples from experiments. '
-    dscrptn += 'It can \nuse either Kornfeld\'s or Student\'s method.\n'
+    dscrptn += 'It can \nuse either Cornfeld\'s or Student\'s method.\n'
     dscrptn += 'However, it always uses the arithmetic mean,\n'
     dscrptn += 'as it is more precise.'
     dscrptn += ' Probability can be: \n0.5, 0.6, 0.7, 0.8, 0.9, 0.95,'
@@ -404,16 +404,16 @@ data."""
     parser.add_argument('-d', '--data', nargs='*', type=float,
                         help='enter data as arguments', default=[])
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-K', '--kornfeld', help='use Kornfeld\'s method',
+    group.add_argument('-C', '--cornfeld', help='use Cornfeld\'s method',
                         action='store_true')
     group.add_argument('-S', '--student', help='use Student\'s method',
                         action='store_true')
 
     # Read arguments from the command line
     args = parser.parse_args()
-    if args.kornfeld and (args.probability):
+    if args.cornfeld and (args.probability):
         msg = 'Probability is for Student\'s t-distribution.'
-        msg += ' Does not make sense with Kornfeld\'s method.'
+        msg += ' Does not make sense with Cornfeld\'s method.'
         raise ValueError(msg)
 
     # Enter experiment results (sample data):
@@ -424,11 +424,11 @@ data."""
             variables = args.data
 
         n = sample_size(*variables)
-        
+
         if args.probability:
             alpha = args.probability
-        elif args.kornfeld:
-            alpha = kornfeld_probability(n)
+        elif args.cornfeld:
+            alpha = cornfeld_probability(n)
         else:
             alpha = 0.8
 
@@ -438,8 +438,8 @@ data."""
             raise ValueError('Please, enter numerical data only!') from e
         else:
             raise e
-    
-    if not args.kornfeld:
+
+    if not args.cornfeld:
         try:
             assert alpha in PROBABILITY_LOOKUP.keys()
         except AssertionError as e:
@@ -452,9 +452,9 @@ data."""
     # Find the arithmetic mean of the results:
     AM = arithmetic_mean(*variables)
     # Then calculate the stochastic error:
-    if args.kornfeld:
-        # using Kornfeld's method
-        error = Kornfeld_variance(*variables)
+    if args.cornfeld:
+        # using Cornfeld's method
+        error = Cornfeld_variance(*variables)
     else:
         # using Student's method
         error = student_error(*variables, mean=AM, probability=alpha)
@@ -479,7 +479,7 @@ data."""
         print('Ɛ(x) << 1%')
     else:
         print('Ɛ(x) =', f'{rel_error:.2%}')
-    
+
     # Aaaand, the most important part... The result of the experiment
     # is displayed (as conventionally recorded).
     res = formatted_output_of_an_experiment_result(AM, error)
